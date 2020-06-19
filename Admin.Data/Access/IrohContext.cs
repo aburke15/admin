@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Admin.Data.Models;
 
-namespace Admin.Data
+namespace Admin.Data.Access
 {
     public partial class IrohContext : DbContext
     {
@@ -17,11 +17,12 @@ namespace Admin.Data
         {
             modelBuilder.Entity<FileResource>(entity =>
             {
-                entity.Property(e => e.FileResourceId).HasDefaultValueSql("(newsequentialid())");
+                entity.Property(e => e.Id)
+                    .HasDefaultValueSql("(newsequentialid())");
 
                 entity.Property(e => e.Filename)
                     .IsRequired()
-                    .HasMaxLength(250);
+                    .HasMaxLength(500);
             });
 
             OnModelCreatingPartial(modelBuilder);

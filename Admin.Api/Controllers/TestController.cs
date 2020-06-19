@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Admin.Data;
+using Admin.Data.Access;
 using Admin.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,34 +24,33 @@ namespace Admin.Api.Controllers
         [HttpGet]
         public async Task InsertIntoDatabase()
         {
-            var fileStream = new FileStream("/Users/aburke/Desktop/dummy.pdf", FileMode.Open);
-            var stream = new StreamReader(fileStream);
-            var stringContent = await stream.ReadToEndAsync();
-            var content = Encoding.UTF8.GetBytes(stringContent);
+            var path = "/Users/aburke/Desktop/dummy.pdf";
+            using var fileStream = new FileStream(path, FileMode.Open);
+            using var stream = new MemoryStream();
 
-            fileStream.Dispose();
-            stream.Dispose();
+            await fileStream.CopyToAsync(stream);
 
             var fileResource = new FileResource
             {
                 Filename = "dummy.pdf",
                 Filesize = 2024,
-                Content = content
+                Content = stream.ToArray()
             };
 
             _context.FileResource.Add(fileResource);
 
+            Console.WriteLine(fileResource.Id);
+
             await _context.SaveChangesAsync();
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> DownloadResource(Guid id)
+        [HttpGet("{id:guid}")]
+        public async Task<FileContentResult> DownloadResource(Guid id)
         {
             var fileResource = await _context.FileResource
                 .FindAsync(id);
 
-            using var memoryStream = new MemoryStream(fileResource.Content);
-            return File(memoryStream, "application/pdf", "new-dummy.pdf");
+            return File(fileResource.Content, "application/pdf", "new-dummy.pdf");
         }
     }
 }
