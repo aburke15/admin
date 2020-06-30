@@ -40,4 +40,4 @@ msbuild.wrn
 appsettings.*
 
 # Docker
-.yml
+docker-compose.yml
