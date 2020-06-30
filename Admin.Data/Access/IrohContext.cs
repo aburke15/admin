@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Admin.Data.Models;
 
 namespace Admin.Data.Access
@@ -24,10 +23,6 @@ namespace Admin.Data.Access
                     .IsRequired()
                     .HasMaxLength(500);
             });
-
-            OnModelCreatingPartial(modelBuilder);
         }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

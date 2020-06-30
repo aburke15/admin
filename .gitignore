@@ -38,3 +38,6 @@ msbuild.wrn
 
 # Appsettings
 appsettings.*
+
+# Docker
+.yml
